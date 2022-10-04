@@ -17,7 +17,7 @@
     body {
         background: #17181F;
         /* min-height: 100vh; */
-        position: relative;
+        position: relative mb-3;
     }
 
     body::-webkit-scrollbar {
@@ -150,24 +150,24 @@
                 <button class="btn oaths text-light px-5 mb-3"><i class="fa-brands fa-facebook me-1"></i> Continue with Facebook</button>
                 <button class="btn oaths text-light px-5 "><i class="fa-brands fa-github me-1"></i> Continue with Github</button>
                 <div class="text-center text-light my-3">or</div>
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column position-relative mb-3 position-relative">
                     <input data-id="1" placeholder="username" type="text" class="check-data username oaths py-2 text-light  ps-3 fs-7" required>
-                    <span class="check-username mb-3 fs-7 fw-light  text-light"></span>
+                    <span class="check-username position-absolute top-0 py-2 end-0 pe-2 mb-3 fs-7 fw-light  text-light"> </span>
                 </div>
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column position-relative mb-3">
                     <input data-id="2" placeholder="Email" type="email" class="check-data email oaths py-2 text-light ps-3 fs-7" required>
-                    <span class="check-email mb-3 fs-7 fw-light text-light"></span>
+                    <span class="check-email position-absolute top-0 py-2 end-0 pe-2 mb-3 fs-7 fw-light text-light"></span>
                 </div>
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column position-relative mb-3">
                     <input data-id="3" placeholder="Password" type="password" class="check-data password oaths py-2 text-light  ps-3 fs-7" required>
-                    <span class="check-password mb-3 fs-7 fw-light text-light"></span>
+                    <span class="check-password position-absolute top-0 py-2 end-0 pe-2 mb-3 fs-7 fw-light text-light"></span>
                 </div>
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column position-relative mb-3">
                     <input data-id="4" placeholder="correct Password" type="password" class="check-data  cpassword oaths py-2 text-light ps-3 fs-7" required>
-                    <span class="check-cpassword mb-3 fs-7 fw-light text-light"></span>
+                    <span class="check-cpassword position-absolute top-0 py-2 end-0 pe-2 mb-3 fs-7 fw-light text-light"></span>
                 </div>
 
-                <input type="submit" value="Signup..." type="button" class="bg-primary sign_btn py-2 text-light border-0 rounded fs-7">
+                <input type="submit" value="Signup..." type="button" class="bg-primary sign_btn py-2 text-light border-0 rounded fs-7 btn" id="sign-up">
             </div>
             <div class="lh-1">
                 <p class=" mt-4 mb-3 text-muted text-center fs-7">You have an account? <span class="text-light">Login here</span></p>
@@ -181,40 +181,83 @@
         $('.register').hide()
         $('.login').show()
         $(".login_trigger").click(function() {
-        $('.register').hide()
-        $('.login').show()
+            $('.register').hide()
+            $('.login').show()
         })
         $(".register_trigger").click(function() {
-        $('.register').show()
-        $('.login').hide()
+            $('.register').show()
+            $('.login').hide()
         })
-
-
+        $("#sign-up").click(function (e) { 
+            e.preventDefault();
+            alert("taha")
+         })
         $('.check-data').keyup(function() {
             let id = $(this).data('id');
             let keyword = $(this).val();
-            let cpassword = $('.cpassword').val()
 
-            $.ajax({
-                url: "register_validation.php",
-                type: "POST",
-                data: {
-                    data_id: id,
-                    key: keyword,
-                    cp: cpassword
-                },
-                success: function(response) {
-                    if (id === 1) {
-                        $('.check-username').html(response)
-                    } else if (id === 2) {
-                        $('.check-email').html(response)
-                    } else if (id === 3) {
-                        $('.check-password').html(response)
-                    }else if (id === 4) {
-                        $('.check-cpassword').html(response)
+            if (id == 1) {
+                $.ajax({
+                    url: "register_validation.php",
+                    type: "POST",
+                    data: {
+                        key: keyword,
+                        user: "user"
+                    },
+                    success: function(response) {
+                        if (response == "user") {
+                            $(".check-username").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Username Already Exist!</span>")
+                            $("#sign-up").addClass("disabled");
+                        } else if (keyword.length < 4 || keyword.length > 16) {
+                            $(".check-username").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'> 4 - 17 Characters</span>")
+                            $("#sign-up").addClass("disabled");
+                        } else {
+                            $(".check-username").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                        }
                     }
+                })
+            }
+            if (id == 2) {
+                $.ajax({
+                    url: "register_validation.php",
+                    type: "POST",
+                    data: {
+                        key: keyword,
+                        email: "email"
+                    },
+                    success: function(response) {
+                        if (response == "email") {
+                            $(".check-email").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Email Already Exist!</span>")
+                            $("#sign-up").addClass("disabled");
+                        } else if (keyword.length - 4 != keyword.indexOf('.') || keyword.length - 10 != keyword.indexOf('@')) {
+                            $(".check-email").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'> Invalid Email</span>")
+                            $("#sign-up").addClass("disabled");
+                        } else {
+                            $(".check-email").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                        }
+                    }
+                })
+            }
+            if (id == 3) {
+                cpass = $(".cpassword").val();
+                if (keyword.length < 8 || keyword.length > 21) {
+                    $(".check-password").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>8 - 20 characters</span>")
+                    $("#sign-up").addClass("disabled");
+                } else {
+                    $(".check-password").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
                 }
-            })
+            }
+            if (id == 4) {
+                pass = $(".password").val();
+                console.log(pass)
+                if (keyword !== pass) {
+                    $(".check-cpassword").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Not Match</span>")
+                    $("#sign-up").addClass("disabled");
+                } else {
+                    $(".check-cpassword").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                }
+            }
+
         })
     })
 </script>
