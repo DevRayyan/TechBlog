@@ -194,7 +194,7 @@
          })
         $('.check-data').keyup(function() {
             let id = $(this).data('id');
-            let keyword = $(this).val();
+            let keyword = $(this).val(); 
 
             if (id == 1) {
                 $.ajax({
