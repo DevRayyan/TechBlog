@@ -196,7 +196,7 @@
             let id = $(this).data('id');
             let keyword = $(this).val(); 
 
-            if (id == 1) {  
+            if (id == 1) {
                 $.ajax({
                     url: "register_validation.php",
                     type: "POST",

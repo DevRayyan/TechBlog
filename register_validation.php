@@ -5,7 +5,7 @@ if(isset($_POST['user']))
 {
     $key = $_POST['key'];
     $sql = mysqli_query($con,"SELECT `Username` FROM `tbl_users` WHERE `Username`='$key'");
-    if(mysqli_num_rows($sql) > 0)   
+    if(mysqli_num_rows($sql) > 0) 
     {
         echo "user";
     }
