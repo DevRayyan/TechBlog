@@ -178,6 +178,35 @@
 </body>
 <script>
     $(document).ready(function() {
+        $("#sign-up").click(function(e) {
+            e.preventDefault();
+            if ($(".username").val() == "" || $(".email").val() == "" || $(".password").val() == "" || $(".cpassword").val() == "") {
+                alert("Please Fill Properly")
+            } else {
+                if ($(".username").data("error") == "clean" || $(".email").data("error") == "clean" || $(".password").data("error") == "clean" || $(".cpassword").data("error") == "clean") {
+                    $.ajax({
+                        type: "POST",
+                        url: "register.php",
+                        data: {
+                            user: $(".username").val(),
+                            email: $(".email").val(),
+                            password: $(".password").val()
+                        },
+                        success: function(reg) {
+                            if (reg == 1) {
+                                alert("registered Successfully");
+                            } else if (reg == 2) {
+                                alert("Email Already Exist!");
+                            } else if (reg == 3) {
+                                alert("Username Already Exist!");
+                            }
+                        }
+                    })
+                } else if ($(".username").data("error") == "error" || $(".email").data("error") == "error" || $(".password").data("error") == "error" || $(".cpassword").data("error") == "error") {
+                    alert("Fill Properly")
+                }
+            }
+        })
         $('.register').hide()
         $('.login').show()
         $(".login_trigger").click(function() {
@@ -188,15 +217,11 @@
             $('.register').show()
             $('.login').hide()
         })
-        $("#sign-up").click(function (e) { 
-            e.preventDefault();
-            alert("taha")
-         })
         $('.check-data').keyup(function() {
+            let thiss = $(this);
             let id = $(this).data('id');
-            let keyword = $(this).val(); 
-
-            if (id == 1) {  
+            let keyword = $(this).val();
+            if (id == 1) {
                 $.ajax({
                     url: "register_validation.php",
                     type: "POST",
@@ -207,12 +232,13 @@
                     success: function(response) {
                         if (response == "user") {
                             $(".check-username").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Username Already Exist!</span>")
-                            $("#sign-up").addClass("disabled");
+                            thiss.attr("data-error", "error")
                         } else if (keyword.length < 4 || keyword.length > 16) {
                             $(".check-username").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'> 4 - 17 Characters</span>")
-                            $("#sign-up").addClass("disabled");
+                            thiss.attr("data-error", "error")
                         } else {
                             $(".check-username").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                            thiss.attr("data-error", "clean")
                         }
                     }
                 })
@@ -228,12 +254,13 @@
                     success: function(response) {
                         if (response == "email") {
                             $(".check-email").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Email Already Exist!</span>")
-                            $("#sign-up").addClass("disabled");
+                            thiss.attr("data-error", "error")
                         } else if (keyword.length - 4 != keyword.indexOf('.') || keyword.length - 10 != keyword.indexOf('@')) {
                             $(".check-email").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'> Invalid Email</span>")
-                            $("#sign-up").addClass("disabled");
+                            thiss.attr("data-error", "error")
                         } else {
                             $(".check-email").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                            thiss.attr("data-error", "clean")
                         }
                     }
                 })
@@ -242,19 +269,27 @@
                 cpass = $(".cpassword").val();
                 if (keyword.length < 8 || keyword.length > 21) {
                     $(".check-password").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>8 - 20 characters</span>")
-                    $("#sign-up").addClass("disabled");
+                    thiss.attr("data-error", "error")
+                } else if (cpass != keyword) {
+                    $(".check-password").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Not Match</span>")
+                    $(".check-cpassword").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Not Match</span>")
+                    thiss.attr("data-error", "error")
                 } else {
                     $(".check-password").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                    $(".check-cpassword").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                    thiss.attr("data-error", "clean")
                 }
             }
             if (id == 4) {
                 pass = $(".password").val();
-                console.log(pass)
                 if (keyword !== pass) {
                     $(".check-cpassword").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Not Match</span>")
-                    $("#sign-up").addClass("disabled");
+                    $(".check-password").html("<span class='text-danger fs-7 fw-normal' style='background: #17181F;'>Not Match</span>")
+                    thiss.attr("data-error", "error")
                 } else {
                     $(".check-cpassword").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                    $(".check-password").html("<span  style='background: #17181F;'><i class='fa-solid fa-check text-success'><i/></span>")
+                    thiss.attr("data-error", "clean")
                 }
             }
 
